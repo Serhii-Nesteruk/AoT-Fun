@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "Context.h"
+#include "Input/InputSystem.h"
 
 int main()
 {
@@ -18,6 +19,15 @@ int main()
         Context::SetUpViewportBasedOnWindow(window);
         Context::SetupCallbacks(window);
 
+        Systems::InputSystem::BindAction(
+            Systems::Input::Key::Escape_Key,
+            Systems::Input::KeyState::Press,
+            [&window]()
+            {
+                glfwSetWindowShouldClose(window.Get(), GLFW_TRUE);
+            }
+        );
+
         while (!window.ShouldClose())
         {
             window.Clear(
@@ -27,6 +37,9 @@ int main()
                     Color::FloatToU8(0.3f)
                     ) /* blue-gray */
                 );
+
+            Systems::InputSystem::ProcessInput(window);
+
             window.SwapBuffers();
             window.PollEvents();
         }
