@@ -7,6 +7,7 @@ int main()
     try
     {
         using namespace GL;
+        using Color = Style::BaseColors::Color;
 
         Context::Init();
 
@@ -19,7 +20,13 @@ int main()
 
         while (!window.ShouldClose())
         {
-            window.Clear();
+            window.Clear(
+                Color(
+                     Color::FloatToU8(0.2f),
+                    Color::FloatToU8(0.3f),
+                    Color::FloatToU8(0.3f)
+                    ) /* blue-gray */
+                );
             window.SwapBuffers();
             window.PollEvents();
         }

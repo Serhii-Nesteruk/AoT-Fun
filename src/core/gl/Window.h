@@ -4,6 +4,8 @@
 
 #include <memory>
 
+#include "../style/BaseColors.h"
+
 namespace GL
 {
     struct GLFWwindowDeleter
@@ -20,6 +22,8 @@ namespace GL
     class Window
     {
     public:
+        using Color = Style::BaseColors::Color;
+
         explicit Window(glm::uvec2 size, const std::string& title);
 
         [[nodiscard]] GLFWwindow* Get() const
@@ -35,7 +39,7 @@ namespace GL
         [[nodiscard]] bool ShouldClose() const;
         void PollEvents();
         void SwapBuffers();
-        void Clear();
+        void Clear(const Color& color);
     private:
         std::unique_ptr<GLFWwindow, GLFWwindowDeleter> _window;
         glm::uvec2 _size{};

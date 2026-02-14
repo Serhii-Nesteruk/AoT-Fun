@@ -28,4 +28,5 @@ target_compile_definitions(GLCoreLib PUBLIC GLM_FORCE_RADIANS)
 
 target_link_libraries(GLCoreLib PRIVATE
         PkgConfig::GLFW
+        StylesLib
 )
