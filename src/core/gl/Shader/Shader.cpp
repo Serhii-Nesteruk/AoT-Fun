@@ -3,6 +3,43 @@
 #include <iostream>
 #include <stdexcept>
 
+GL::ShaderProgram::ShaderProgram(ShaderProgram&& other) noexcept
+    : _shaders(std::move(other._shaders)),
+      _program(other._program),
+      _isAttached(other._isAttached),
+      _isLinked(other._isLinked),
+      _isCreated(other._isCreated)
+{
+    other._program = NullObject;
+    other._isAttached = false;
+    other._isLinked = false;
+    other._isCreated = false;
+}
+
+GL::ShaderProgram& GL::ShaderProgram::operator=(ShaderProgram&& other) noexcept
+{
+    if (this != &other)
+    {
+        if (_program != NullObject)
+        {
+            glDeleteProgram(_program);
+        }
+
+        _shaders     = std::move(other._shaders);
+        _program     = other._program;
+        _isAttached  = other._isAttached;
+        _isLinked    = other._isLinked;
+        _isCreated   = other._isCreated;
+
+        other._program = NullObject;
+        other._isAttached = false;
+        other._isLinked = false;
+        other._isCreated = false;
+    }
+    return *this;
+}
+
+
 GL::ShaderProgram::~ShaderProgram()
 {
     if (_program != NullObject)
@@ -38,6 +75,11 @@ void GL::ShaderProgram::Attach(GLuint shaderIdx)
     if (!isShaderValid(shaderIdx))
     {
         throw std::invalid_argument("ShaderProgram::Attach(): shader is null");
+    }
+
+    if (checkIfAttached(shaderIdx))
+    {
+        return;
     }
 
     glAttachShader(_program, shaderIdx);
@@ -87,6 +129,16 @@ void GL::ShaderProgram::Use() const
     glUseProgram(_program);
 }
 
+bool GL::ShaderProgram::checkIfAttached(GLuint shaderIdx) const
+{
+    for (auto shader : _shaders)
+    {
+        if (shader == shaderIdx)
+            return true;
+    }
+    return false;
+}
+
 void GL::ShaderProgram::DeleteShaders()
 {
     for (auto shader : _shaders)
@@ -114,7 +166,7 @@ GL::Shader::Shader(Shader&& other) noexcept
     _isCompiled = other._isCompiled;
     _source = other._source;
 
-    other._source = nullptr;
+    other._source = {};
     other._isCompiled = false;
     other._index = NullObject;
 }
@@ -129,7 +181,7 @@ GL::Shader& GL::Shader::operator=(Shader&& other) noexcept
         _isCompiled = other._isCompiled;
         _source = other._source;
 
-        other._source = nullptr;
+        other._source = {};
         other._isCompiled = false;
         other._index = NullObject;
     }
@@ -148,7 +200,7 @@ void GL::Shader::Create(ShaderType type)
     _index = glCreateShader(static_cast<GLenum>(type));
 }
 
-void GL::Shader::SetSource(const GLchar* source)
+void GL::Shader::SetSource(const std::string& source)
 {
     _source = source;
 }
@@ -159,7 +211,7 @@ void GL::Shader::Compile()
     {
         throw std::runtime_error("GL::Shader::Compile(): Shader is not created");
     }
-    if (!_source)
+    if (_source.empty())
     {
         throw std::runtime_error("GL::Shader::Compile(): Source is empty");
     }
@@ -168,8 +220,10 @@ void GL::Shader::Compile()
         return;
     }
 
-    glShaderSource(_index, 1, &_source, nullptr);
+    const GLchar* _sourceC = _source.c_str();
+    glShaderSource(_index, 1, &_sourceC, nullptr);
     glCompileShader(_index);
+    CheckCompileErrors(_index, (_type == ShaderType::VERTEX) ? "VERTEX" : "FRAGMENT");
 
     _isCompiled = true;
 }
@@ -206,6 +260,6 @@ void GL::Shader::Destroy()
         glDeleteShader(_index);
         _index = NullObject;
         _isCompiled = false;
-        _source = nullptr;
+        _source = {};
     }
 }

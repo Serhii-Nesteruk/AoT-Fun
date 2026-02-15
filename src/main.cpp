@@ -1,22 +1,11 @@
+#include <filesystem>
 #include <iostream>
 
 #include "Context.h"
 #include "Input/InputSystem.h"
-#include "Objects/Drawable.h"
+#include "Objects/Mesh.h"
 #include "Shader/Shader.h"
-
-const char *vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    "}\0";
-const char *fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-    "}\n\0";
+#include "Shader/ShaderManager.h"
 
 int main()
 {
@@ -25,7 +14,6 @@ int main()
         using namespace GL;
         using namespace Objects;
         using Color = Style::BaseColors::Color;
-
 
         Context::Init();
 
@@ -36,23 +24,12 @@ int main()
         Context::SetUpViewportBasedOnWindow(window);
         Context::SetupCallbacks(window);
 
-        // Shaders
-        Shader vertexShader;
-        vertexShader.Create(Shader::ShaderType::VERTEX);
-        vertexShader.SetSource(vertexShaderSource);
-        vertexShader.Compile();
+        std::vector<std::filesystem::path> shaders = {
+                "../assets/shaders/main_vertex.glsl",
+                "../assets/shaders/main_fragment.glsl"
+        };
 
-        Shader fragmentShader;
-        fragmentShader.Create(Shader::ShaderType::FRAGMENT);
-        fragmentShader.SetSource(fragmentShaderSource);
-        fragmentShader.Compile();
-
-        // link shaders
-        ShaderProgram shaderProgram;
-        shaderProgram.Create();
-        shaderProgram.Attach(vertexShader.GetIndex());
-        shaderProgram.Attach(fragmentShader.GetIndex());
-        shaderProgram.Link();
+        auto shaderProgram = ShaderManager::CreateShaderProgram(shaders);
 
         struct VertexP { glm::vec3 pos; };
 
@@ -64,18 +41,25 @@ int main()
         };
 
         std::vector<VertexP> verts = {
-            {{-0.5f,-0.5f,0.0f}},
+            {{0.5f,0.5f,0.0f}},
             {{ 0.5f,-0.5f,0.0f}},
-            {{ 0.0f, 0.5f,0.0f}},
+            {{ -0.5f, -0.5f,0.0f}},
+            {{ -0.5f, 0.5f,0.0f}},
         };
 
-        Drawable::Params p;
+        std::vector<unsigned int> indices = {
+            0, 1, 3,
+            1, 2, 3
+        };
+
+        Mesh::Params p;
         p.vertexBytes = ToBytes(verts);
         p.layout = layoutP;
-        p.drawMode = Drawable::DrawMode::TRIANGLES;
-        p.buffersMode = Drawable::BufferRenderMode::STATIC;
+        p.drawMode = Mesh::DrawMode::TRIANGLES;
+        p.buffersMode = Mesh::BufferRenderMode::STATIC;
+        p.indices = indices;
 
-        Drawable triangle(p);
+        Mesh triangle(p);
 
         Systems::InputSystem::BindAction(
             Systems::Input::Key::Escape_Key,

@@ -41,7 +41,7 @@ namespace GL::Objects
         return out;
     }
 
-    class Drawable
+    class Mesh
     {
     public:
         enum class BufferRenderMode : GLenum
@@ -73,9 +73,9 @@ namespace GL::Objects
         };
 
 
-        explicit Drawable(const Params& params);
+        explicit Mesh(const Params& params);
 
-        virtual ~Drawable();
+        virtual ~Mesh();
 
         virtual void Draw();
         virtual void Setup();
@@ -91,6 +91,7 @@ namespace GL::Objects
         std::vector<unsigned int> _indices{};
         BufferRenderMode _buffersMode = BufferRenderMode::STATIC;
         DrawMode _drawMode;
-        VertexLayout _layout;GLsizei _vertexCount = 0;
+        VertexLayout _layout;
+        GLsizei _vertexCount = 0;
     };
 }

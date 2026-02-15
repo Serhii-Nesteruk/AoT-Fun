@@ -1,6 +1,6 @@
-#include "Drawable.h"
+#include "Mesh.h"
 
-GL::Objects::Drawable::Drawable(const Params& params)
+GL::Objects::Mesh::Mesh(const Params& params)
     : _vertexBytes(params.vertexBytes),
       _indices(params.indices),
       _buffersMode(params.buffersMode),
@@ -11,16 +11,16 @@ GL::Objects::Drawable::Drawable(const Params& params)
         ? static_cast<GLsizei>(_vertexBytes.size() / _layout.stride)
         : 0;
 
-    Drawable::Setup();
+    Mesh::Setup();
 }
 
 
-GL::Objects::Drawable::~Drawable()
+GL::Objects::Mesh::~Mesh()
 {
     DeleteBuffers();
 };
 
-void GL::Objects::Drawable::Draw()
+void GL::Objects::Mesh::Draw()
 {
     glBindVertexArray(_VAO);
     if (_indices.size() > 0)
@@ -34,27 +34,27 @@ void GL::Objects::Drawable::Draw()
     // glBindVertexArray(0);
 }
 
-void GL::Objects::Drawable::Setup()
+void GL::Objects::Mesh::Setup()
 {
     GenerateBuffers();
     SetupBuffers();
 }
 
-void GL::Objects::Drawable::GenerateBuffers()
+void GL::Objects::Mesh::GenerateBuffers()
 {
     glGenVertexArrays(1, &_VAO);
     glGenBuffers(1, &_VBO);
     glGenBuffers(1, &_EBO);
 }
 
-void GL::Objects::Drawable::DeleteBuffers()
+void GL::Objects::Mesh::DeleteBuffers()
 {
     glDeleteVertexArrays(1, &_VAO);
     glDeleteBuffers(1, &_VBO);
     glDeleteBuffers(1, &_EBO);
 }
 
-void GL::Objects::Drawable::SetupBuffers()
+void GL::Objects::Mesh::SetupBuffers()
 {
     glBindVertexArray(_VAO);
 

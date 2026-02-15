@@ -1,9 +1,11 @@
 #pragma once
 
+#include "GLDependencies.h"
+
+#include <stdexcept>
 #include <vector>
 #include <string>
-
-#include "GLDependencies.h"
+#include <filesystem>
 
 namespace GL
 {
@@ -27,7 +29,7 @@ namespace GL
         ~Shader();
 
         void Create(ShaderType type);
-        void SetSource(const char* source);
+        void SetSource(const std::string& source);
         void Compile();
         void Destroy();
 
@@ -55,6 +57,15 @@ namespace GL
         }
 
         [[nodiscard]]
+        static ShaderType DetectType(const std::filesystem::__cxx11::path& p)
+        {
+            const auto s = p.stem().string(); // "main_vertex", "main_fragment"
+            if (s.find("vert") != std::string::npos) return ShaderType::VERTEX;
+            if (s.find("frag") != std::string::npos) return ShaderType::FRAGMENT;
+            throw std::runtime_error("Can't detect shader type from filename: " + p.string());
+        }
+
+        [[nodiscard]]
         ShaderType GetType() const
         {
             return _type;
@@ -66,7 +77,7 @@ namespace GL
 
             _index = NullObject;
             _isCompiled = false;
-            _source = nullptr;
+            _source = {};
 
             return tmp;
         }
@@ -74,7 +85,8 @@ namespace GL
     private:
         GLuint _index = NullObject;
         bool _isCompiled = false;
-        const GLchar* _source = nullptr;
+        // const GLchar* _source = nullptr;
+        std::string _source{};
         ShaderType _type = ShaderType::VERTEX;
     };
 
@@ -82,12 +94,18 @@ namespace GL
     {
     public:
         ShaderProgram() = default;
+        ShaderProgram(const ShaderProgram&) = delete;
+        ShaderProgram& operator=(const ShaderProgram&) = delete;
+        ShaderProgram(ShaderProgram&& other) noexcept;
+        ShaderProgram& operator=(ShaderProgram&& other) noexcept;
         ~ShaderProgram();
 
         void Create();
         void Attach(GLuint shaderIdx);
         void Link();
         void Use() const;
+
+        [[nodiscard]] bool checkIfAttached(GLuint shaderIdx) const;
 
         [[nodiscard]] bool isAttached() const
         {
