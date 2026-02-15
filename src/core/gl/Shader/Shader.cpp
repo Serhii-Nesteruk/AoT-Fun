@@ -1,5 +1,6 @@
 #include "Shader.h"
 
+#include <iostream>
 #include <stdexcept>
 
 GL::ShaderProgram::~ShaderProgram()
@@ -57,6 +58,15 @@ void GL::ShaderProgram::Link()
     }
 
     glLinkProgram(_program);
+
+    GLint success = 0;
+    glGetProgramiv(_program, GL_LINK_STATUS, &success);
+    if (!success)
+    {
+        GL::Shader::CheckCompileErrors(_program, "PROGRAM");
+        throw std::runtime_error("ShaderProgram::Link(): link failed");
+    }
+
     _isLinked = true;
 
     DeleteShaders();
@@ -163,6 +173,31 @@ void GL::Shader::Compile()
 
     _isCompiled = true;
 }
+
+void GL::Shader::CheckCompileErrors(GLuint shader, const std::string& type)
+{
+    GLint success;
+    GLchar infoLog[1024];
+    if(type != "PROGRAM")
+    {
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+        if(!success)
+        {
+            glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+            std::cerr << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+        }
+    }
+    else
+    {
+        glGetProgramiv(shader, GL_LINK_STATUS, &success);
+        if(!success)
+        {
+            glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+            std::cerr << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+        }
+    }
+}
+
 
 void GL::Shader::Destroy()
 {
