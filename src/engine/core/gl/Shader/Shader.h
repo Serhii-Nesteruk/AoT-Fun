@@ -105,6 +105,11 @@ namespace GL
         void Link();
         void Use() const;
 
+        [[nodiscard]] GLuint GetId()
+        {
+            return _program;
+        }
+
         [[nodiscard]] bool checkIfAttached(GLuint shaderIdx) const;
 
         [[nodiscard]] bool isAttached() const

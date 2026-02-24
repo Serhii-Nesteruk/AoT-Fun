@@ -17,7 +17,7 @@ add_library(GLCoreLib STATIC
 )
 
 target_include_directories(GLCoreLib PUBLIC
-    "${CMAKE_CURRENT_SOURCE_DIR}"
+    "."
     "${GLAD_INCLUDE}"
 )
 

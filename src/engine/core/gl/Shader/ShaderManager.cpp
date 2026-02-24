@@ -25,6 +25,7 @@ std::string GL::ShaderManager::loadSourceCodeFromFile(const std::filesystem::pat
 
     return shaderStream.str();
 }
+
 GL::ShaderProgram GL::ShaderManager::CreateShaderProgram(const ListOfPaths& shaders)
 {
     ShaderProgram program;

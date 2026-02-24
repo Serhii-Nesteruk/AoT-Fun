@@ -75,6 +75,12 @@ namespace GL::Objects
 
         explicit Mesh(const Params& params);
 
+        Mesh(const Mesh&) = delete;
+        Mesh& operator=(const Mesh&) = delete;
+
+        Mesh(Mesh&&) = default;
+        Mesh& operator=(Mesh&&) = default;
+
         virtual ~Mesh();
 
         virtual void Draw();

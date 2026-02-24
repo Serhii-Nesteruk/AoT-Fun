@@ -6,15 +6,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(PROJECT_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_subdirectory(src/core/gl)
-add_subdirectory(src/core/style)
-add_subdirectory(src/core/systems)
+add_subdirectory(src/engine/core/gl)
+add_subdirectory(src/engine/core/style)
+add_subdirectory(src/engine/core/systems)
+add_subdirectory(src/engine/core/2DGraphics)
 
 add_executable(AoT
         src/main.cpp
+        src/App.cpp
 )
 
 target_link_libraries(AoT PRIVATE
         GLCoreLib
         SystemsLib
+        2DGraphicsLib
 )
