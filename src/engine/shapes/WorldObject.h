@@ -7,7 +7,7 @@
 
 namespace CoreUtils
 {
-    struct VertexP;
+    struct VertexPT;
 }
 
 struct Transform
@@ -33,7 +33,7 @@ public:
     const Transform& GetTransform() const { return _transform; }
     Transform& GetTransform() { return _transform; }
 protected:
-    std::vector<CoreUtils::VertexP> _vertices{};
+    std::vector<CoreUtils::VertexPT> _vertices{};
     std::unique_ptr<GL::Objects::Mesh> _mesh;
     Transform _transform{};
 };

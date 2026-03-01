@@ -11,6 +11,10 @@ Planned Features:
 - 2D and 3D modes
 - UI(ImGUI)
 
+some screenshots(curr state):
+
+![img.png](assets/docs/img.png)
+
 ### Dependencies:
 - OpenGL 3.3
 - GLFW 3.4.0

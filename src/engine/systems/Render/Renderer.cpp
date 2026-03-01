@@ -54,6 +54,17 @@ void Renderer::Flush()
             currentProgram->SetVec4("uColor", cmd.material.color);
         }
 
+        if (cmd.material.texture)
+        {
+            cmd.material.texture->Bind(0);
+            currentProgram->SetInt("uTexture", 0);
+            currentProgram->SetBool("uUseTexture", true);
+        }
+        else
+        {
+            currentProgram->SetBool("uUseTexture", false);
+        }
+
         cmd.mesh->Draw();
     }
 }

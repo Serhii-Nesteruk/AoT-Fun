@@ -10,7 +10,7 @@ add_subdirectory(src/engine/core/gl)
 add_subdirectory(src/engine/utils/)
 add_subdirectory(src/engine/core/style)
 add_subdirectory(src/engine/systems)
-add_subdirectory(src/engine/2DGraphics)
+add_subdirectory(src/engine/shapes)
 
 add_executable(AoT
         src/main.cpp

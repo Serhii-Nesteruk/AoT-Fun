@@ -1,12 +1,14 @@
 #pragma once
 
 #include "GLDependencies.h"
+#include "Texture/Texture2D.h"
 
 namespace GL { class ShaderProgram; }
 namespace GL::Objects { class Mesh; }
 
 struct Material {
     GL::ShaderProgram* program = nullptr;
+    Texture2D* texture = nullptr;
     glm::vec4 color = {1,1,1,1};
 };
 

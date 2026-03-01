@@ -15,4 +15,7 @@ protected:
     void OnUpdate(float) override;
     void OnRender() override;
     void OnShutdown() override;
+
+private:
+    std::unique_ptr<Texture2D> _texture;
 };
