@@ -43,6 +43,8 @@ namespace GL
             return glm::vec2(w, h);
         }
 
+        void Viewport();
+
         [[nodiscard]] bool ShouldClose() const;
         void PollEvents();
         void SwapBuffers();

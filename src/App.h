@@ -1,39 +1,18 @@
 #pragma once
 
-#include <filesystem>
-#include <memory>
-#include <vector>
+#include "GameTemplate2D.h"
 
-#include "Window.h"
-#include "WorldObject.h"
-#include "engine/core/style/BaseColors.h"
-#include "Objects/Mesh.h"
-#include "Shader/Shader.h"
-#include "Utils.h"
-
-class App {
-    using Color = Style::BaseColors::Color;
-    using ShaderVec = std::vector<std::filesystem::path>;
-    using Vertices = std::vector<CoreUtils::VertexP>;
-    using Mesh = GL::Objects::Mesh;
+class App : public GameTemplate2D {
 public:
-    App();
-    ~App();
+    App() = default;
+    ~App() override = default;
 
-    void run();
-private:
+protected:
     void WorldObjectsInit();
-    void ContextSetup();
-    void AppInit();
     void SetupSystems();
-    void Draw();
-    void CreateRenderContext();
-    void CreateWindow();
 
-    Renderer _renderer;
-    std::unique_ptr<GL::Window> _window;
-
-    std::unique_ptr<GL::ShaderProgram> _shaderProgram;
-
-    std::vector<std::unique_ptr<IWorldObject>> _objects{};
+    void OnInit() override;
+    void OnUpdate(float) override;
+    void OnRender() override;
+    void OnShutdown() override;
 };

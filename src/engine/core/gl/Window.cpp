@@ -19,6 +19,12 @@ GL::Window::Window(glm::uvec2 size, const std::string& title)
    }
 }
 
+void GL::Window::Viewport()
+{
+    glm::vec2 fbuffSize = GetFramebufferSize();
+    glViewport(0, 0, static_cast<int>(fbuffSize.x), static_cast<int>(fbuffSize.y));
+}
+
 bool GL::Window::ShouldClose() const
 {
     return glfwWindowShouldClose(_window.get());

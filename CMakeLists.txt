@@ -15,6 +15,7 @@ add_subdirectory(src/engine/2DGraphics)
 add_executable(AoT
         src/main.cpp
         src/App.cpp
+        src/GameTemplate2D.cpp
 )
 
 target_link_libraries(AoT PRIVATE
