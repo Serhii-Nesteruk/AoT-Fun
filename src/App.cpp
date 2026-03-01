@@ -1,7 +1,6 @@
 #include "App.h"
 
-
-#include "engine/core/2DGraphics/Rectangle.h"
+#include "engine/2DGraphics/Rectangle.h"
 #include "Input/InputSystem.h"
 #include "Objects/Mesh.h"
 
@@ -39,20 +38,9 @@ void App::run()
     }
 }
 
-// delete this test function
-void App::RunAnimation(float deltaTime)
-{
-    auto rect1 = _objects.at(0).get();
-
-    if (!moveLeft)
-        rect1->Move(_shaderProgram.GetId(), {0.1f * deltaTime, 0.f, 0.f});
-    else
-        rect1->Move(_shaderProgram.GetId(), {-0.1f * deltaTime, 0.f, 0.f});
-}
-
 void App::WorldObjectsInit()
 {
-    auto rect = std::make_unique<Rectangle>(glm::vec3{-1.0f, 1.0f, 0.0f}, glm::vec3{0.125f, 2.0f, 0.0f});
+    auto rect = std::make_unique<Rectangle>(glm::vec3{-0.5f, 0.5f, 0.0f}, glm::vec3{1.0f, 1.0f, 0.0f});
     rect->SetColor(Style::BaseColors::WHITE);
     _objects.emplace_back(std::move(rect));
 }
@@ -87,22 +75,13 @@ void App::AppInit()
 void App::SetupSystems()
 {
     Systems::InputSystem::BindAction(
-           Systems::Input::Key::A_Key,
+           Systems::Input::Key::Escape_Key,
            Systems::Input::KeyState::Press,
            [&]()
            {
-                moveLeft = true;
+                glfwSetWindowShouldClose(_window->Get(), GL_TRUE);
            }
        );
-
-    Systems::InputSystem::BindAction(
-       Systems::Input::Key::B_Key,
-       Systems::Input::KeyState::Press,
-       [&]()
-       {
-            moveLeft = false;
-       }
-   );
 }
 
 void App::Draw()
@@ -113,9 +92,6 @@ void App::Draw()
        float currentTime = glfwGetTime();
        float deltaTime = currentTime - lastTime;
        lastTime = currentTime;
-
-       // TODO: use movement / animation system
-       RunAnimation(deltaTime); // delete
 
        object->Draw(_shaderProgram.GetId());
    }

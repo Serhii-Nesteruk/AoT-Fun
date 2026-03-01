@@ -9,14 +9,12 @@
 #include "engine/core/style/BaseColors.h"
 #include "Objects/Mesh.h"
 #include "Shader/Shader.h"
+#include "Utils.h"
 
 class App {
-    struct VertexP { glm::vec3 pos; };
-
     using Color = Style::BaseColors::Color;
     using ShaderVec = std::vector<std::filesystem::path>;
-    using Vertices = std::vector<VertexP>;
-
+    using Vertices = std::vector<CoreUtils::VertexP>;
     using Mesh = GL::Objects::Mesh;
 public:
     App();

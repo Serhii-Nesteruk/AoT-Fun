@@ -1,14 +1,15 @@
 #include "Rectangle.h"
 
+#include "Utils.h"
 #include "Shader/Shader.h"
 
-std::vector<unsigned int> Rectangle::_indices = {
+std::vector<unsigned int> IWorldObject::_indices = {
     0, 1, 3,
     1, 2, 3
 };
 
 Rectangle::Rectangle(glm::vec3 position, glm::vec3 size, const Color& color)
-    : _position(position), _size(size), _color(color), _mesh(nullptr)
+    : IWorldObject(position, size), _color(color)
 {
     Init();
 }
@@ -26,13 +27,13 @@ void Rectangle::SetColor(const Color& color)
 
 void Rectangle::Move(GLuint shaderProgramId, glm::vec3 offset)
 {
-    _position += offset;
+    _transform.position += offset;
     glUniform3fv(glGetUniformLocation(shaderProgramId, "uOffset"), 1, &offset[0] );
 }
 
 void Rectangle::Init()
 {
-    _vertices = MakeRectVerts_TopLeft(_position, _size.x, _size.y);
+    _vertices = CoreUtils::MakeRectVerts_TopLeft(_transform.position, _transform.size.x, _transform.size.y);
     GL::Objects::VertexLayout layoutP {
         .stride = sizeof(VertexP),
         .attribs = {
@@ -40,22 +41,6 @@ void Rectangle::Init()
         }
     };
     _mesh = MakeRectMesh(layoutP);
-}
-
-// TODO: move to IWorldObject or Utils
-std::vector<Rectangle::VertexP> Rectangle::MakeRectVerts_TopLeft(glm::vec2 topLeft, float w, float h, float z)
-{
-    float x0 = topLeft.x;
-    float y0 = topLeft.y;
-    float x1 = topLeft.x + w;
-    float y1 = topLeft.y - h;
-
-    return {
-                {{ x1, y0, z }}, // 0 top-right
-                {{ x1, y1, z }}, // 1 bottom-right
-                {{ x0, y1, z }}, // 2 bottom-left
-                {{ x0, y0, z }}, // 3 top-left
-            };
 }
 
  std::unique_ptr<Rectangle::Mesh> Rectangle::MakeRectMesh(const GL::Objects::VertexLayout& layoutP) const

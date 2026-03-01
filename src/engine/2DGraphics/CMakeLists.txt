@@ -14,4 +14,5 @@ target_include_directories(2DGraphicsLib PUBLIC
 target_link_libraries(2DGraphicsLib PRIVATE
         GLCoreLib
         StylesLib
+        CoreUtilsLib
 )
