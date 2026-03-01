@@ -3,7 +3,9 @@
 #include "Utils.h"
 #include "Shader/Shader.h"
 
-std::vector<unsigned int> IWorldObject::_indices = {
+#include <glm/gtc/matrix_transform.hpp>
+
+std::vector<unsigned int> Rectangle::_indices = {
     0, 1, 3,
     1, 2, 3
 };
@@ -14,10 +16,18 @@ Rectangle::Rectangle(glm::vec3 position, glm::vec3 size, const Color& color)
     Init();
 }
 
-void Rectangle::Draw(GLuint shaderProgramId)
+void Rectangle::Draw(RenderContext& ctx)
 {
-    glUniform4fv(glGetUniformLocation(shaderProgramId, "uColor"), 1, &_color[0]);
-    _mesh->Draw();
+    DrawCommand cmd;
+    cmd.mesh = _mesh.get();
+    cmd.material.program = &ctx.shaderProgram;
+    cmd.material.color = _color;
+    cmd.model = MakeModelMatrix();
+
+    ctx.renderer.Submit(cmd);
+    // ctx.program.SetVec4("uColor", _color);
+    // ctx.program.SetMat4("uModel", MakeModelMatrix());
+    // _mesh->Draw();
 }
 
 void Rectangle::SetColor(const Color& color)
@@ -25,10 +35,9 @@ void Rectangle::SetColor(const Color& color)
     _color = color;
 }
 
-void Rectangle::Move(GLuint shaderProgramId, glm::vec3 offset)
+void Rectangle::Move(glm::vec3 offset)
 {
     _transform.position += offset;
-    glUniform3fv(glGetUniformLocation(shaderProgramId, "uOffset"), 1, &offset[0] );
 }
 
 void Rectangle::Init()
@@ -43,7 +52,14 @@ void Rectangle::Init()
     _mesh = MakeRectMesh(layoutP);
 }
 
- std::unique_ptr<Rectangle::Mesh> Rectangle::MakeRectMesh(const GL::Objects::VertexLayout& layoutP) const
+glm::mat4 Rectangle::MakeModelMatrix() const
+{
+    glm::mat4 m(1.0f);
+    m = glm::translate(m, _transform.position);
+    return m;
+}
+
+std::unique_ptr<Rectangle::Mesh> Rectangle::MakeRectMesh(const GL::Objects::VertexLayout& layoutP) const
 {
     if (_vertices.empty())
     {

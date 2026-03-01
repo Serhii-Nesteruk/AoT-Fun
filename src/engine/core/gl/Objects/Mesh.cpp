@@ -20,7 +20,7 @@ GL::Objects::Mesh::~Mesh()
     DeleteBuffers();
 };
 
-void GL::Objects::Mesh::Draw()
+void GL::Objects::Mesh::Draw() const
 {
     glBindVertexArray(_VAO);
     if (_indices.size() > 0)

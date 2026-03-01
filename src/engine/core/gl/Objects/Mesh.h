@@ -83,7 +83,7 @@ namespace GL::Objects
 
         virtual ~Mesh();
 
-        virtual void Draw();
+        virtual void Draw() const;
         virtual void Setup();
 
     protected:

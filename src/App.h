@@ -22,23 +22,18 @@ public:
 
     void run();
 private:
-    void RunAnimation(float deltaTime);
-
     void WorldObjectsInit();
     void ContextSetup();
     void AppInit();
     void SetupSystems();
     void Draw();
+    void CreateRenderContext();
+    void CreateWindow();
 
+    Renderer _renderer;
     std::unique_ptr<GL::Window> _window;
-    ShaderVec _shaders{};
 
-    GL::ShaderProgram _shaderProgram;
-    Vertices _vertices{};
-    std::vector<unsigned int> _indices{};
+    std::unique_ptr<GL::ShaderProgram> _shaderProgram;
 
     std::vector<std::unique_ptr<IWorldObject>> _objects{};
-
-    // delete this test var
-    bool moveLeft = false;
 };

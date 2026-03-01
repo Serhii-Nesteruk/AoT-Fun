@@ -1,6 +1,8 @@
 #pragma once
 
 #include "GLDependencies.h"
+#include "../systems/Render/RenderContext.h"
+#include "../systems/Render/Renderer.h"
 #include "Objects/Mesh.h"
 
 namespace CoreUtils
@@ -25,14 +27,14 @@ public:
         : _transform(position, size) {};
     virtual ~IWorldObject() = default;
 
-    virtual void Draw(GLuint shaderProgramId) = 0; // TODO: temporary requires shader program id
-    virtual void Move(GLuint shaderProgramId, glm::vec3 offset) = 0;
+    virtual void Draw(RenderContext& ctx) = 0;
+    virtual void Move(glm::vec3 offset) = 0;
 
+    const Transform& GetTransform() const { return _transform; }
+    Transform& GetTransform() { return _transform; }
 protected:
     std::vector<CoreUtils::VertexP> _vertices{};
     std::unique_ptr<GL::Objects::Mesh> _mesh;
     Transform _transform{};
-
-    static std::vector<unsigned int> _indices;
 };
 

@@ -22,15 +22,15 @@ App::~App()
 
 void App::run()
 {
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_DEPTH_TEST);
     while (!_window->ShouldClose())
     {
-        _window->Clear(
-            Color(Style::BaseColors::BLACK)
-            );
+        _window->Clear(Style::BaseColors::BLACK);
 
         Systems::InputSystem::ProcessInput(*_window);
 
-        _shaderProgram.Use();
+        _shaderProgram->Use();
         Draw();
 
         _window->SwapBuffers();
@@ -51,22 +51,16 @@ void App::ContextSetup()
     Context::GladSetup();
     Context::SetUpViewportBasedOnWindow(*_window);
     Context::SetupCallbacks(*_window);
+
+    CreateRenderContext();
 }
 
 void App::AppInit()
 {
     Context::Init();
 
-    _window = std::make_unique<Window>( glm::vec2{1280, 720} , "Test App");
+    CreateWindow();
     ContextSetup();
-
-    _shaders.emplace_back("../assets/shaders/main_vertex.glsl");
-    _shaders.emplace_back("../assets/shaders/main_fragment.glsl");
-
-    _shaderProgram = ShaderManager::CreateShaderProgram(_shaders);
-
-    _shaders.clear();
-
     WorldObjectsInit();
 
     SetupSystems();
@@ -86,13 +80,35 @@ void App::SetupSystems()
 
 void App::Draw()
 {
-    float lastTime = 0.0f;
-   for (auto& object : _objects)
-   {
-       float currentTime = glfwGetTime();
-       float deltaTime = currentTime - lastTime;
-       lastTime = currentTime;
+    static float lastTime = static_cast<float>(glfwGetTime());
+    float currentTime = static_cast<float>(glfwGetTime());
+    float dt = currentTime - lastTime;
+    lastTime = currentTime;
 
-       object->Draw(_shaderProgram.GetId());
-   }
+    FrameContext frame;
+    frame.dt = dt;
+
+    _renderer.BeginFrame(frame);
+
+    for (auto& object : _objects)
+    {
+        RenderContext ctx{_renderer, *_shaderProgram};
+        object->Draw(ctx);
+    }
+
+    _renderer.EndFrame();
+}
+
+void App::CreateRenderContext()
+{
+    ShaderVec shaders{};
+    shaders.emplace_back("../assets/shaders/main_vertex.glsl");
+    shaders.emplace_back("../assets/shaders/main_fragment.glsl");
+
+    _shaderProgram = std::make_unique<ShaderProgram>(ShaderManager::CreateShaderProgram(shaders));
+}
+
+void App::CreateWindow()
+{
+    _window = std::make_unique<Window>( glm::vec2{1280, 720} , "Test App");
 }
