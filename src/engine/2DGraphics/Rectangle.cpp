@@ -42,7 +42,7 @@ void Rectangle::Move(glm::vec3 offset)
 
 void Rectangle::Init()
 {
-    _vertices = CoreUtils::MakeRectVerts_TopLeft(_transform.position, _transform.size.x, _transform.size.y);
+    _vertices = CoreUtils::MakeRectVerts_TopLeft(glm::vec2(0.0f, 0.0f), _transform.size.x, _transform.size.y);
     GL::Objects::VertexLayout layoutP {
         .stride = sizeof(VertexP),
         .attribs = {

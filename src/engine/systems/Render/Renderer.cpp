@@ -44,6 +44,8 @@ void Renderer::Flush()
         {
             currentProgram = cmd.material.program;
             currentProgram->Use();
+
+            currentProgram->SetMat4("uViewProj", _frame.viewProj);
         }
 
         if (currentProgram)

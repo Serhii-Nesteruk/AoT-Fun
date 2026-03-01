@@ -1,5 +1,7 @@
 #include "App.h"
 
+#include <glm/ext/matrix_clip_space.hpp>
+
 #include "engine/2DGraphics/Rectangle.h"
 #include "Input/InputSystem.h"
 #include "Objects/Mesh.h"
@@ -40,7 +42,10 @@ void App::run()
 
 void App::WorldObjectsInit()
 {
-    auto rect = std::make_unique<Rectangle>(glm::vec3{-0.5f, 0.5f, 0.0f}, glm::vec3{1.0f, 1.0f, 0.0f});
+    auto rect = std::make_unique<Rectangle>(
+        glm::vec3{320.0f, 180.0f, 0.0f},
+        glm::vec3{200.0f, 150.0f, 0.0f}
+        );
     rect->SetColor(Style::BaseColors::WHITE);
     _objects.emplace_back(std::move(rect));
 }
@@ -87,6 +92,17 @@ void App::Draw()
 
     FrameContext frame;
     frame.dt = dt;
+
+    float windowWidth = _window->GetFramebufferSize().x;
+    float windowHeight = _window->GetFramebufferSize().y;
+
+    glViewport(0, 0, static_cast<int>(windowWidth), static_cast<int>(windowHeight));
+
+    frame.viewProj = glm::ortho(
+        0.0f, windowWidth,
+        windowHeight, 0.0f,
+        -1.0f, 1.0f
+    );
 
     _renderer.BeginFrame(frame);
 

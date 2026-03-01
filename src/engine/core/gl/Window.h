@@ -36,6 +36,13 @@ namespace GL
             return _size;
         }
 
+        [[nodiscard]] glm::vec2 GetFramebufferSize() const
+        {
+            int w, h;
+            glfwGetFramebufferSize(_window.get(), &w, &h);
+            return glm::vec2(w, h);
+        }
+
         [[nodiscard]] bool ShouldClose() const;
         void PollEvents();
         void SwapBuffers();

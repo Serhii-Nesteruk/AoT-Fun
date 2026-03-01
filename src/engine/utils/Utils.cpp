@@ -7,7 +7,7 @@ namespace CoreUtils
         float x0 = topLeft.x;
         float y0 = topLeft.y;
         float x1 = topLeft.x + w;
-        float y1 = topLeft.y - h;
+        float y1 = topLeft.y + h;
 
         return {
                         {{ x1, y0, z }}, // 0 top-right
